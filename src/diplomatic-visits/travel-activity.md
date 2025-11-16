@@ -2,9 +2,10 @@
 import * as Inputs from "npm:@observablehq/inputs";
 import * as Plot from "@observablehq/plot";
 import * as d3 from "npm:d3";
+import {horizontalBarChart} from "../components/horizontalBarChart.js"
 ```
 
-# Travel Activity
+# Diplomatic Travel Activity
 
 From initial observation we can start by analyzing the data and identifying patterns or trends.
 
@@ -46,73 +47,9 @@ const topVisitors = visitors2020.topVisitors.splice(0, 10)
 const topVisited = visitors2020.topVisited.splice(0, 10)
 ```
 ```js
+const topVisitorsPlot = horizontalBarChart(topVisitors);
+const topVisitedPlot = horizontalBarChart(topVisited, "steelblue");
 
-const topVisitorsPlot = Plot.plot({
-  title: "Top Countries that sent Diplomatic Visitors",
-  x: {
-    label: "Number of visits"
-  },
-  y: {
-    label: "Country"
-  },
-  marginLeft: 170,
-  marks: [
-    Plot.barX(topVisitors, {
-      x: "visitCount",
-      y: "country",
-      fill: "tomato",
-      sort: {
-        y: "x",
-        order: "descending"
-      }
-    }),
-    Plot.text(topVisitors, {
-      text: d => `${d.visitCount}`,
-      x: "visitCount",
-      y: "country",
-      dx: -15,
-      fontSize: 12,
-      fontWeight: "bold",
-      lineAnchor: "middle",
-      fill: "white"
-    }),
-    Plot.ruleX([0])
-  ]
-})
-
-
-const topVisitedPlot = Plot.plot({
-  title: "Top Countries Visited by Diplomatic Officials",
-  x: {
-    label: "Number of visits"
-  },
-  y: {
-    label: "Country"
-  },
-  marginLeft: 170,
-  marks: [
-    Plot.barX(topVisited, {
-      x: "visitCount",
-      y: "country",
-      fill: "steelblue",
-      sort: {
-        y: "x",
-        order: "descending"
-      }
-    }),
-    Plot.text(topVisited, {
-      text: d => `${d.visitCount}`,
-      x: "visitCount",
-      y: "country",
-      dx: -15,
-      fontSize: 12,
-      fontWeight: "bold",
-      lineAnchor: "middle",
-      fill: "white"
-    }),
-    Plot.ruleX([0])
-  ]
-})
 ```
 
 
@@ -121,10 +58,11 @@ Let's take a look at the year 2020 and see which country officials made the most
 
 <div class="grid grid-cols-2">
     <div class="card">${topVisitorsPlot}</div>
-  <div class="card">${topVisitedPlot}</div>
+    <div class="card">${topVisitedPlot}</div>
 </div>
 
 
+TODO:
 
 Trips by leader (bar chart) – LeaderFullName or LeaderCountryISO.
 
