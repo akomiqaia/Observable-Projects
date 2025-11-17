@@ -24,7 +24,7 @@ export async function horizontalBarChart(data, fill, title) {
         dx: 10,
         fontSize: 16,
         fontWeight: "bold",
-        fill: "black",
+        fill: "var(--theme-foreground)",
       }),
       Plot.text(data, {
         text: (d) => `${d[1]}`,
@@ -34,7 +34,7 @@ export async function horizontalBarChart(data, fill, title) {
         fontSize: 16,
         fontWeight: "bold",
         lineAnchor: "middle",
-        fill: "white",
+        fill: "var(--theme-foreground)",
       }),
       Plot.ruleX([0]),
       Plot.axisX({
@@ -44,7 +44,6 @@ export async function horizontalBarChart(data, fill, title) {
         labelArrow: false,
         fontSize: 16,
         fontWeight: "bold",
-        fill: "black",
         dx: 15,
         marginBottom: 50,
         tickFormat: () => "",
@@ -54,7 +53,6 @@ export async function horizontalBarChart(data, fill, title) {
         label: "Country",
         fontSize: 16,
         fontWeight: "bold",
-        fill: "black",
         dx: 15,
         tickFormat: () => "",
         tickSize: 0,
