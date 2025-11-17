@@ -45,6 +45,8 @@ Let's take a look at the year 2020 and see which country officials made the most
 const visitorsByYear = d3.group(trips, d => d.TripYear)
 ```
 
+<div class="tip">You can see the other years by changing the year selection.</div>
+
 ```js
 const year = view(
   Inputs.select(visitorsByYear, { 
@@ -55,6 +57,8 @@ const year = view(
   })
 )
 ```
+
+
 ```js
 const visitors = d3.rollup(visitorsByYear.get(year), v => d3.sum(v, d => d.Count), d => d.CountryOrigin)
 const visited = d3.rollup(visitorsByYear.get(year), v => d3.sum(v, d => d.Count), d => d.CountryVisited)
@@ -80,7 +84,9 @@ const topVisitedPlot = horizontalBarChart(topVisited, "steelblue", html`Top Coun
     <div class="card">${topVisitedPlot}</div>
 </div>
 
-
+<!--```js
+display(topVisitors)
+```-->
 
 TODO:
 
