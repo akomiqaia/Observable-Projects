@@ -70,17 +70,17 @@ const topVisited = Array.from(visited.entries())
 ```
 
 ```js
-const topVisitorsPlot = horizontalBarChart(topVisitors, "tomato", "Top Countries that sent Diplomatic Visitors");
-const topVisitedPlot = horizontalBarChart(topVisited, "steelblue", "Top Countries that received Diplomatic Visitors");
+const topVisitorsPlot = horizontalBarChart(topVisitors, "tomato",html`Top Countries that<br /><b>sent</b> Diplomatic Visitors`);
+const topVisitedPlot = horizontalBarChart(topVisited, "steelblue", html`Top Countries that<br /><b>received</b> Diplomatic Visitors`);
 
 ```
-
-
 
 <div class="grid grid-cols-2">
     <div class="card">${topVisitorsPlot}</div>
     <div class="card">${topVisitedPlot}</div>
 </div>
+
+
 
 TODO:
 
