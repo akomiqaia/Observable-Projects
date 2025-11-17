@@ -1,51 +1,54 @@
 import * as Plot from "@observablehq/plot";
 
-export function horizontalBarChart(data, fill) {
+export async function horizontalBarChart(data, fill, title) {
   return Plot.plot({
-    title: "Top Countries that sent Diplomatic Visitors",
-
+    title: title,
     height: 600,
-
+    marginRight: 150,
     marks: [
       Plot.barX(data, {
-        x: "visitCount",
-        y: "country",
+        x: (d) => d[1],
+        y: (d) => d[0],
         fill: fill ?? "tomato",
         sort: {
-          y: "x",
           reverse: true,
+          y: "x",
         },
       }),
       Plot.text(data, {
-        text: "country",
-        x: 0,
-        y: "country",
+        text: (d) => d[0],
+        x: (d) => d[1],
+        y: (d) => d[0],
         textAnchor: "start",
-        lineWidth: 6,
+        lineWidth: 10,
         dx: 10,
         fontSize: 16,
         fontWeight: "bold",
-        fill: "white",
+        fill: "black",
       }),
       Plot.text(data, {
-        text: (d) => `${d.visitCount}`,
-        x: "visitCount",
-        y: "country",
-        dx: 20,
+        text: (d) => `${d[1]}`,
+        x: (d) => d[1],
+        y: (d) => d[0],
+        dx: -20,
         fontSize: 16,
         fontWeight: "bold",
         lineAnchor: "middle",
-        fill: "black",
+        fill: "white",
       }),
       Plot.ruleX([0]),
       Plot.axisX({
         label: "Number of Visits",
-        labelOffset: 50,
+        labelOffset: 30,
+        labelAnchor: "center",
+        labelArrow: false,
         fontSize: 16,
         fontWeight: "bold",
         fill: "black",
         dx: 15,
         marginBottom: 50,
+        tickFormat: () => "",
+        tickSize: 0,
       }),
       Plot.axisY({
         label: "Country",
@@ -53,7 +56,7 @@ export function horizontalBarChart(data, fill) {
         fontWeight: "bold",
         fill: "black",
         dx: 15,
-        tickFormat: (d) => "",
+        tickFormat: () => "",
         tickSize: 0,
       }),
     ],

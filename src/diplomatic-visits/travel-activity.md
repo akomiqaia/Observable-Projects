@@ -12,14 +12,14 @@ From initial observation we can start by analyzing the data and identifying patt
 > | Goal: Understand where, when, and how much travel occurred.
 
 ```js
-const tripPerYear = FileAttachment("../data/visits/visits-by-year.json").json()
+const trips = FileAttachment("../data/visits/visits-by-year.json").json()
 ```
 
 ```js
-
+const tripPerYear = d3.rollups(trips, v => v.length, d => d.TripYear)
 const tripPerYearChart = Plot.barY(tripPerYear, {
-  x: "TripYear",
-  y: "visitCount",
+  x: d => d[0],
+  y: d => d[1],
   fill: "steelblue",
 }).plot({
   title: "Number of Visits by Year",
@@ -39,28 +39,48 @@ display(tripPerYearChart)
 ```
 The official visits have dropped significantly in 2020, even lover then number of flights in 1990. Which must have been due to the COVID-19 pandemic.
 
-```js
-const visitors2020 = FileAttachment("../data/visits/diplomatic-activity-2020.json").json()
-```
-```js
-const topVisitors = visitors2020.topVisitors.splice(0, 10)
-const topVisited = visitors2020.topVisited.splice(0, 10)
-```
-```js
-const topVisitorsPlot = horizontalBarChart(topVisitors);
-const topVisitedPlot = horizontalBarChart(topVisited, "steelblue");
+Let's take a look at the year 2020 and see which country officials made the most diplomatic visits and which country hosted the most diplomatic visitors.
 
+```js
+const visitorsByYear = d3.group(trips, d => d.TripYear)
 ```
 
+```js
+const year = view(
+  Inputs.select(visitorsByYear, { 
+    label: "Year", 
+    format: d => d[0].toString(),
+    valueof: ([year]) => year,
+    value: 2020
+  })
+)
+```
+```js
+const visitors = d3.rollup(visitorsByYear.get(year), v => d3.sum(v, d => d.Count), d => d.CountryOrigin)
+const visited = d3.rollup(visitorsByYear.get(year), v => d3.sum(v, d => d.Count), d => d.CountryVisited)
+```
+
+```js
+const topVisitors = Array.from(visitors.entries())
+  .sort((a, b) => b[1] - a[1]) 
+  .slice(0, 10);
+const topVisited = Array.from(visited.entries())
+  .sort((a, b) => b[1] - a[1])
+  .slice(0, 10);
+```
+
+```js
+const topVisitorsPlot = horizontalBarChart(topVisitors, "tomato", "Top Countries that sent Diplomatic Visitors");
+const topVisitedPlot = horizontalBarChart(topVisited, "steelblue", "Top Countries that received Diplomatic Visitors");
+
+```
 
 
-Let's take a look at the year 2020 and see which country officials made the most diplomatic visits and which country was most visited.
 
 <div class="grid grid-cols-2">
     <div class="card">${topVisitorsPlot}</div>
     <div class="card">${topVisitedPlot}</div>
 </div>
-
 
 TODO:
 

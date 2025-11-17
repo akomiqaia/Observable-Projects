@@ -7,8 +7,9 @@ toc: false
   <h2>Welcome to a page where you can see data visualization work.</h2>
 </div>
 
-<h2>This is what we got so far:</h2>
-
+<div>
+    <h2>This is what we got so far:</h2>
+</div>
 <div class="grid grid-cols-2" style="grid-auto-rows: 504px;">
   <div class="card">${
     resize((width) => Plot.plot({
