@@ -1,6 +1,10 @@
 import * as Plot from "@observablehq/plot";
 
-export async function horizontalBarChart(data, fill, title) {
+export function horizontalBarChart(
+  data: [string, number][],
+  fill?: string,
+  title?: string
+) {
   return Plot.plot({
     title: title,
     height: 600,
@@ -33,7 +37,7 @@ export async function horizontalBarChart(data, fill, title) {
         dx: -20,
         fontSize: 16,
         fontWeight: "bold",
-        lineAnchor: "middle",
+        textAnchor: "end",
         fill: "var(--theme-foreground)",
       }),
       Plot.ruleX([0]),

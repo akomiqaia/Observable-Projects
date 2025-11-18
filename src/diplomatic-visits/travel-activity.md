@@ -21,8 +21,8 @@ const df = parquetData.toArray().map(d => ({
   LeaderID: parseInt(d.LeaderID),
   Exiled: parseInt(d.Exiled),
   TripYear: parseInt(d.TripYear),
-  TripStartDate: d => new Date(d).toLocaleDateString(),
-  TripEndDate: d => new Date(d).toLocaleDateString()
+  TripStartDate: new Date(d).toLocaleDateString(),
+  TripEndDate: new Date(d).toLocaleDateString()
 }))
 ```
 
@@ -48,7 +48,7 @@ const tripPerYearChart = Plot.barY(tripPerYear, {
 })
 display(tripPerYearChart)
 ```
-The official visits have dropped significantly in 2020, even lover then number of flights in 1990. Which must have been due to the COVID-19 pandemic.
+The official visits have dropped significantly in 2020, even lower than the number of flights in 1990, which must have been due to the COVID-19 pandemic.
 
 Let's take a look at the year 2020 and see which country officials made the most diplomatic visits and which country hosted the most diplomatic visitors.
 
