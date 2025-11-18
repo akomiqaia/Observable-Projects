@@ -8,7 +8,7 @@ export default {
   // lets you organize them into sections and have unlisted pages.
   pages: [
     {
-      name: "Diplomatic Visits (1990-2025)",
+      name: "Diplomatic Visits (1990-2024)",
       open: false,
       path: "/diplomatic-visits/",
       pages: [

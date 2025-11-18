@@ -12,11 +12,22 @@ From initial observation we can start by analyzing the data and identifying patt
 > | Goal: Understand where, when, and how much travel occurred.
 
 ```js
-const trips = FileAttachment("../data/visits/visits-by-year.json").json()
+const parquetData = FileAttachment("../data/visits.parquet").parquet()
 ```
 
 ```js
-const tripPerYear = d3.rollups(trips, v => v.length, d => d.TripYear)
+const df = parquetData.toArray().map(d => ({
+  ...d,
+  LeaderID: parseInt(d.LeaderID),
+  Exiled: parseInt(d.Exiled),
+  TripYear: parseInt(d.TripYear),
+  TripStartDate: d => new Date(d).toLocaleDateString(),
+  TripEndDate: d => new Date(d).toLocaleDateString()
+}))
+```
+
+```js
+const tripPerYear = d3.rollups(df, v => v.length, d => d.TripYear)
 const tripPerYearChart = Plot.barY(tripPerYear, {
   x: d => d[0],
   y: d => d[1],
@@ -42,7 +53,7 @@ The official visits have dropped significantly in 2020, even lover then number o
 Let's take a look at the year 2020 and see which country officials made the most diplomatic visits and which country hosted the most diplomatic visitors.
 
 ```js
-const visitorsByYear = d3.group(trips, d => d.TripYear)
+const visitorsByYear = d3.group(df, d => d.TripYear)
 ```
 
 <div class="tip">You can see the other years by changing the year selection.</div>
@@ -58,10 +69,9 @@ const year = view(
 )
 ```
 
-
 ```js
-const visitors = d3.rollup(visitorsByYear.get(year), v => d3.sum(v, d => d.Count), d => d.CountryOrigin)
-const visited = d3.rollup(visitorsByYear.get(year), v => d3.sum(v, d => d.Count), d => d.CountryVisited)
+const visitors = d3.rollup(visitorsByYear.get(year), v => v.length, d => d.LeaderCountryOrIGO)
+const visited = d3.rollup(visitorsByYear.get(year), v => v.length, d => d.CountryVisited)
 ```
 
 ```js
@@ -83,10 +93,6 @@ const topVisitedPlot = horizontalBarChart(topVisited, "steelblue", html`Top Coun
     <div class="card">${topVisitorsPlot}</div>
     <div class="card">${topVisitedPlot}</div>
 </div>
-
-<!--```js
-display(topVisitors)
-```-->
 
 TODO:
 
