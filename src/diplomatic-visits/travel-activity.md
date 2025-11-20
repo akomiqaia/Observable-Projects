@@ -2,7 +2,8 @@
 import * as Inputs from "npm:@observablehq/inputs";
 import * as Plot from "@observablehq/plot";
 import * as d3 from "npm:d3";
-import {horizontalBarChart} from "../components/horizontalBarChart.js"
+import {horizontalBarChart} from "../components/horizontal-bar-chart.js"
+import {multiLinePlot} from "../components/multi-line-chart.js"
 ```
 
 # Diplomatic Travel Activity
@@ -104,49 +105,17 @@ looking beyond 2020 and investigating other years it seems that **Palestine** ha
 in terms of who received the most diplomatic visitors it seems that the **United States** has received the most diplomatic visitors in 25 out of 35 years.
 
 ```js
-const f = d3.flatRollup(df,
+const multiLineChartData = d3.flatRollup(df,
   v => v.length,
   d => d.LeaderCountryOrIGO,
   d => d.TripYear
 )
 ```
 
+
+
 ```js
-Plot.plot({
-  y: {
-    grid: true,
-    label: "↑ Number of visits"
-  },
-  x: {
-    tickFormat: d => d.toString() 
-  },
-  marginBottom: 20,
-  marks: [
-    Plot.ruleY([0]),
-    Plot.lineY(f, {
-      x: d => d[1],
-      y: d=> d[2], 
-      z: d => d[0], 
-      stroke: d => d[0],
-      // strokeOpacity: d => selectedCountry === null || selectedCountry === d[0] ? 1 : 0.2,
-      // strokeWidth: d => selectedCountry === d[0] ? 3 : 1.5,
-      channels: {
-        Country: d => d[0],
-        Count: d => d[2],
-        Year: d => d[1].toString()
-      },
-      tip: {
-        format: {
-          stroke: false,
-          x: false,
-          y: false,
-          z: false
-        }
-      }
-    }),
-    
-  ]
-})
+multiLinePlot(multiLineChartData)
 ```
 
 TODO:
