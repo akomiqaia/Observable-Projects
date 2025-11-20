@@ -12,11 +12,16 @@ From initial observation we can start by analyzing the data and identifying patt
 > | Goal: Understand where, when, and how much travel occurred.
 
 ```js
-const parquetData = FileAttachment("../data/visits.parquet").parquet()
+const parquetData = FileAttachment("../data/visits.json").json();
+
 ```
 
 ```js
-const df = parquetData.toArray().map(d => ({
+display(parquetData)
+```
+
+```js
+const df = parquetData.map(d => ({
   ...d,
   LeaderID: parseInt(d.LeaderID),
   Exiled: parseInt(d.Exiled),
@@ -115,7 +120,7 @@ Plot.plot({
   x: {
     tickFormat: d => d.toString() 
   },
-  marginBottom: 50,
+  marginBottom: 20,
   marks: [
     Plot.ruleY([0]),
     Plot.lineY(f, {

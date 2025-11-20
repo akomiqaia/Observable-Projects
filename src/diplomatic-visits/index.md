@@ -1,6 +1,5 @@
 # Diplomatic Visits
 
-
 1. Travel Activity
 
 Goal: Understand where, when, and how much travel occurred.
