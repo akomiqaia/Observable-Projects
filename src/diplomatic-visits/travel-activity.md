@@ -110,17 +110,27 @@ const multiLineChartData = d3.flatRollup(df,
   d => d.LeaderCountryOrIGO,
   d => d.TripYear
 )
+
+const countries = [...new Set(multiLineChartData.map(d => d[0]))]
+
 ```
 
 
 
 ```js
-multiLinePlot(multiLineChartData)
+
+const searchResults = view(Inputs.search(multiLineChartData, {
+  placeholder: "Search your country",
+  datalist: countries,
+  format: () => "",
+}))
+```
+
+```js
+multiLinePlot(searchResults)
 ```
 
 TODO:
-
-Trips by leader (bar chart) – LeaderFullName or LeaderCountryISO.
 
 Trips by region visited (stacked bar chart) – RegionVisited / SubRegionVisited.
 
