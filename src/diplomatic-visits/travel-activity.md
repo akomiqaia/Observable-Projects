@@ -4,6 +4,8 @@ import * as Plot from "@observablehq/plot";
 import * as d3 from "npm:d3";
 import {horizontalBarChart} from "../components/horizontal-bar-chart.js"
 import {multiLinePlot} from "../components/multi-line-chart.js"
+import {stackedBarChart} from "../components/stacked-bar-chart.js"
+
 ```
 
 # Diplomatic Travel Activity
@@ -14,7 +16,6 @@ From initial observation we can start by analyzing the data and identifying patt
 
 ```js
 const parquetData = FileAttachment("../data/visits.json").json();
-
 ```
 
 ```js
@@ -28,28 +29,11 @@ const df = parquetData.map(d => ({
 }))
 ```
 
-```js
-const tripPerYear = d3.rollups(df, v => v.length, d => d.TripYear)
-const tripPerYearChart = Plot.barY(tripPerYear, {
-  x: d => d[0],
-  y: d => d[1],
-  fill: "steelblue",
-}).plot({
-  title: "Number of Visits by Year",
-  width: 800,
-  grid: true,
-  marginBottom: 50,
-  x: { 
-    tickRotate: -45,
-    label: "Year",
-    tickFormat: d => d.toString()
-  },
-  y: {
-    label: "Number of Visits"
-  }
-})
-display(tripPerYearChart)
-```
+
+<div class=card>
+    ${stackedBarChart(df)}
+</div>
+
 The official visits have dropped significantly in 2020, even lower than the number of flights in 1990, which must have been due to the COVID-19 pandemic.
 
 Let's take a look at the year 2020 and see which country officials made the most diplomatic visits and which country hosted the most diplomatic visitors.
@@ -151,7 +135,6 @@ searchResultsInput.style.gap = "0.5rem";
 
 TODO:
 
-Trips by region visited (stacked bar chart) – RegionVisited / SubRegionVisited.
 
 Trip duration distribution (histogram) – TripDuration.
 
