@@ -18,10 +18,6 @@ const parquetData = FileAttachment("../data/visits.json").json();
 ```
 
 ```js
-display(parquetData)
-```
-
-```js
 const df = parquetData.map(d => ({
   ...d,
   LeaderID: parseInt(d.LeaderID),
@@ -105,30 +101,53 @@ looking beyond 2020 and investigating other years it seems that **Palestine** ha
 in terms of who received the most diplomatic visitors it seems that the **United States** has received the most diplomatic visitors in 25 out of 35 years.
 
 ```js
+const toggleInput = Inputs.toggle({
+  label: html`<i>Show countries who received diplomatic visitors</i>`,
+  value: false,
+  format: () => "",
+})
+
+const toggle = Generators.input(toggleInput);
+toggleInput.style.flexDirection = "row-reverse";
+
+```
+
+```js
+
 const multiLineChartData = d3.flatRollup(df,
   v => v.length,
-  d => d.LeaderCountryOrIGO,
+  d => toggle ? d.CountryVisited : d.LeaderCountryOrIGO,
   d => d.TripYear
 )
 
+
 const countries = [...new Set(multiLineChartData.map(d => d[0]))]
 
-```
 
-
-
-```js
-
-const searchResults = view(Inputs.search(multiLineChartData, {
-  placeholder: "Search your country",
+const searchResultsInput = Inputs.search(multiLineChartData, {
+  label: "Country",
+  placeholder: "Filter countries",
   datalist: countries,
   format: () => "",
-}))
+})
+
+const searchResults = Generators.input(searchResultsInput);
+
+searchResultsInput.style.display = "flex";
+searchResultsInput.style.flexDirection = "column";
+searchResultsInput.style.gap = "0.5rem";
+
+
 ```
 
-```js
-multiLinePlot(searchResults)
-```
+<div class="card" style="display: flex; flex-direction: column; gap: 1rem;">
+    <div style="display: flex;  gap: 1rem;">
+        ${searchResultsInput}
+        ${toggleInput}
+    </div>
+    ${multiLinePlot(searchResults)}
+</div>
+
 
 TODO:
 
