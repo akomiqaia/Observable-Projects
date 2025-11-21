@@ -27,15 +27,14 @@ export function stackedBarChart(data: any[], options: any): any {
           {
             fill: "RegionVisited",
             x: "TripYear",
+            tip: {
+              format: {
+                x: (d) => d.toString(),
+              },
+            },
           },
         ),
       ),
-      // Plot.tip({
-      //   y: "count",
-      //   x: "TripYear",
-      //   fill: "RegionVisited",
-      //   title: (d) => `${d.RegionVisited} - ${d.TripYear}`,
-      // }),
     ],
   });
 }
