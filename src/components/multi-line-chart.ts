@@ -1,7 +1,7 @@
 import * as Plot from "@observablehq/plot";
 import * as d3 from "d3";
 
-export const multiLinePlot = (data) => {
+export const multiLinePlot = (data, width) => {
   return Plot.plot({
     y: {
       grid: true,
@@ -10,6 +10,7 @@ export const multiLinePlot = (data) => {
     x: {
       tickFormat: (d) => d.toString(),
     },
+    width,
     marginBottom: 20,
     marks: [
       Plot.ruleY([0]),

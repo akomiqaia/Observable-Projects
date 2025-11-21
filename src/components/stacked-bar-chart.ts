@@ -1,12 +1,12 @@
 import * as Plot from "@observablehq/plot";
 
-export function stackedBarChart(data: any[], options: any): any {
+export function stackedBarChart(data: any[], width: number): any {
   return Plot.plot({
     color: {
       legend: true,
     },
     title: "Number of diplomatic visits in last 35 years",
-    width: 800,
+    width,
     grid: true,
     marginBottom: 50,
     x: {

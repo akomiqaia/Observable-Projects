@@ -31,7 +31,7 @@ const df = parquetData.map(d => ({
 
 
 <div class=card>
-    ${stackedBarChart(df)}
+    ${stackedBarChart(df, width)}
 </div>
 
 The official visits have dropped significantly in 2020, even lower than the number of flights in 1990, which must have been due to the COVID-19 pandemic.
@@ -129,7 +129,7 @@ searchResultsInput.style.gap = "0.5rem";
         ${searchResultsInput}
         ${toggleInput}
     </div>
-    ${multiLinePlot(searchResults)}
+    ${multiLinePlot(searchResults, width)}
 </div>
 
 
