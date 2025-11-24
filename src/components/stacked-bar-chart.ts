@@ -25,7 +25,7 @@ export function stackedBarChart(data: any[], width: number): any {
             y: "count",
           },
           {
-            fill: "RegionVisited",
+            fill: "LeaderRegion",
             x: "TripYear",
             tip: {
               format: {

@@ -135,7 +135,6 @@ searchResultsInput.style.gap = "0.5rem";
 
 TODO:
 
-
 Trip duration distribution (histogram) – TripDuration.
 
-Timeline of each leader’s trips (Gantt-style chart).
+Each country visitor exchange (using Chord diagram).
