@@ -1,11 +1,12 @@
 import * as Plot from "@observablehq/plot";
 
-export function stackedBarChart(data: any[], width: number): any {
+export function stackedBarChart(data: any[], width: number, regionToggle: boolean): any {
   return Plot.plot({
     color: {
       legend: true,
     },
     title: "Number of diplomatic visits in last 35 years",
+    subtitle: regionToggle ? "By Region visited" :"By Leaders origin",
     width,
     grid: true,
     marginBottom: 50,
@@ -25,7 +26,7 @@ export function stackedBarChart(data: any[], width: number): any {
             y: "count",
           },
           {
-            fill: "LeaderRegion",
+            fill: regionToggle ? "RegionVisited" :"LeaderRegion",
             x: "TripYear",
             tip: {
               format: {

@@ -29,9 +29,23 @@ const df = parquetData.map(d => ({
 }))
 ```
 
+```js
+const toggleInputRegion = Inputs.toggle({
+  label: html`<i>Visited Regions</i>`,
+  value: false,
+  format: () => "",
+})
 
-<div class=card>
-    ${stackedBarChart(df, width)}
+const toggleRegion = Generators.input(toggleInputRegion);
+toggleInputRegion.style.flexDirection = "row-reverse";
+toggleInputRegion.style.position = "absolute";
+toggleInputRegion.style.top = "30px"
+toggleInputRegion.style.right = "0"
+```
+
+<div class="card" style="position: relative;">
+    ${toggleInputRegion}
+    ${stackedBarChart(df, width, toggleRegion)}
 </div>
 
 The official visits have dropped significantly in 2020, even lower than the number of flights in 1990, which must have been due to the COVID-19 pandemic.
