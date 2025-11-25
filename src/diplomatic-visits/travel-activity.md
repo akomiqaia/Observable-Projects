@@ -179,16 +179,30 @@ searchResultsInput.style.gap = "0.5rem";
   
   metadata.colors = d3.scaleOrdinal(metadata.regions, d3.schemeObservable10)
   
-const filters = {
-  year: 2022,
-  regions: metadata.regions,
-  minVisits: 5,
-}
+  const yearSlider = Inputs.range([1990, 2024], {step: 1, value: 1990})
+  const minVisitSlider = Inputs.range([1, 50], {step: 1, value: 5})
+  const yearSliderValue = Generators.input(yearSlider)
+  const minVisitSliderValue = Generators.input(minVisitSlider)
+  
+```
+```js
+
+  const filters = {
+    year: yearSliderValue,
+    regions: metadata.regions,
+    minVisits: minVisitSliderValue
+  }
 ```
 
 Chord diagram of countries per year.
 
 <div class="card">
-    ${chordLegend(metadata, filters)}
+    <div class="grid grid-cols-2">
+        ${yearSlider}
+        ${minVisitSlider}
+        <div class="grid-colspan-2">
+            ${chordLegend(metadata, filters)}
+        </div>
+    </div>
     ${chordDiagram(preAggregated, metadata, filters, width)}
 </div>
