@@ -6,7 +6,7 @@ import {horizontalBarChart} from "../components/horizontal-bar-chart.js"
 import {multiLinePlot} from "../components/multi-line-chart.js"
 import {stackedBarChart} from "../components/stacked-bar-chart.js"
 
-import {chordDiagram} from "../components/chord-diagram.js"
+import {chordDiagram, legend as chordLegend} from "../components/chord-diagram.js"
 
 ```
 
@@ -177,6 +177,8 @@ searchResultsInput.style.gap = "0.5rem";
     ).sort(),
   };
   
+  metadata.colors = d3.scaleOrdinal(metadata.regions, d3.schemeCategory10)
+  
 const filters = {
   year: 2022,
   // regions: ["Europe", "Asia", "Oceania", "Africa"],
@@ -187,5 +189,6 @@ const filters = {
 Chord diagram of countries per year.
 
 <div class="card">
+    ${chordLegend(metadata)}
     ${chordDiagram(preAggregated, metadata, filters, width)}
 </div>

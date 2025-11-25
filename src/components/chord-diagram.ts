@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { html } from "htl";
 
 export function chordDiagram(data, metadata, filters, width) {
   // get unique values of countries
@@ -6,7 +7,7 @@ export function chordDiagram(data, metadata, filters, width) {
     data,
     filters,
   );
-  const colors = d3.scaleOrdinal(metadata.regions, d3.schemeCategory10);
+  const colors = metadata.colors;
 
   const outerRadius = Math.min(width, width) * 0.4 - 40;
   const innerRadius = outerRadius - 20;
@@ -137,4 +138,23 @@ function createChordMatrix(preAggregated, filters = {}) {
   });
 
   return { matrix, countries, countryToRegion };
+}
+
+export function legend(metadata) {
+  return html`
+    <div style="display: flex; width: 100%; gap: 8px; flex-wrap: wrap; ">
+      ${metadata.regions.map(
+        (d) => html`
+          <div style="display: flex; align-items: center;">
+            <div
+              style="width: 20px; height: 20px; background-color: ${metadata.colors(
+                d,
+              )}; border-radius: 10%; margin-right: 10px;"
+            ></div>
+            <div>${d}</div>
+          </div>
+        `,
+      )}
+    </div>
+  `;
 }
