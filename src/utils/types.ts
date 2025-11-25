@@ -1,0 +1,44 @@
+export interface Visit {
+  LeaderID: number;
+  LeaderCountryOrIGO: string;
+  LeaderCountryISO: string;
+  LeaderRegion: string;
+  LeaderSubregion: string;
+  LeaderRole: string;
+  LeaderTitle: string;
+  LeaderSurname: string;
+  LeaderFullName: string;
+  Exiled: number;
+  CountryVisited: string;
+  CountryVisitedISO: string;
+  RegionVisited: string;
+  SubRegionVisited: string;
+  DisputedTerritory: boolean;
+  SemiAutoTerritory: boolean;
+  TripYear: number;
+  TripStartDate: string | Date;
+  TripEndDate: string | Date;
+  TripDuration: number;
+  SubHOGSTravelWithHOGS: boolean;
+  MetHostHoGS: boolean;
+  HostHOGSName: string;
+  SubHOGSmetHostSubHOGS: boolean;
+  HostSubHOGSName: string;
+  AttendedMultilatEvent: boolean;
+  NameMultilatEvent: string;
+  AttendedMultilatMinisterialEvent: boolean;
+  NameMultilatMinisterialEvent: string;
+  MetNonhostHOGS: boolean;
+  NonhostHOGSNames: string;
+  PublicAddress: boolean;
+  SignedAgreement: boolean;
+  CulturalSiteOrCeremony: boolean;
+  BusinessLeaderOrForum: boolean;
+  MetIGOLeader: boolean;
+  IGOLeaderName: string;
+  Notes: string;
+  Confidence: number;
+  TripID: string;
+}
+
+export type VisitsData = Visit[];

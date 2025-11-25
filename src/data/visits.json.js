@@ -11,5 +11,4 @@ const reader = await connection.runAndReadAll(sql`
 `);
 
 const jsonData = reader.getRowObjectsJson();
-
 process.stdout.write(JSON.stringify(jsonData));
