@@ -163,14 +163,18 @@ function createChordMatrix(
   return { matrix, countries, countryToRegion };
 }
 
-export function legend(metadata: Metadata, filters: Filters) {
+export function legend(metadata: Metadata, updateRegions) {
   return html`
     <div
-      style="display: flex; width: 100%; gap: 8px; flex-wrap: wrap; font-size: 10px; "
+      style="display: flex; width: 100%; gap: 8px; flex-wrap: wrap; font-size: 10px;"
+      id="chord-legend"
     >
-      ${filters.regions.map(
-        (d) => html`
-          <div style="display: flex; align-items: center;">
+      ${metadata.regions.map((d) => {
+        return html`
+          <div
+            style="display: flex; align-items: center; cursor: pointer;"
+            onclick=${() => updateRegions(d)}
+          >
             <div
               style="width: 15px; height: 15px; background-color: ${metadata.colors(
                 d,
@@ -178,8 +182,8 @@ export function legend(metadata: Metadata, filters: Filters) {
             ></div>
             <div>${d}</div>
           </div>
-        `,
-      )}
+        `;
+      })}
     </div>
   `;
 }

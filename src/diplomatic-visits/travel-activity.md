@@ -179,19 +179,25 @@ searchResultsInput.style.gap = "0.5rem";
   
   metadata.colors = d3.scaleOrdinal(metadata.regions, d3.schemeObservable10)
   
-  const yearSlider = Inputs.range([1990, 2024], {step: 1, value: 1990})
-  const minVisitSlider = Inputs.range([1, 50], {step: 1, value: 5})
+  const yearSlider = Inputs.range([1990, 2024], {step: 1, value: 1990, label: 'Year'})
+  const minVisitSlider = Inputs.range([1, 50], {step: 1, value: 5, label: 'Cumulative Visits between the 2 countries'})
   const yearSliderValue = Generators.input(yearSlider)
   const minVisitSliderValue = Generators.input(minVisitSlider)
+  const selectedRegions = Mutable(metadata.regions);
+  const updateRegions = (d) => {
+    return selectedRegions.value = selectedRegions.value.includes(d)
+      ? selectedRegions.value.filter((r) => r !== d)
+      : [...selectedRegions.value, d];
+  }
   
 ```
 ```js
-
   const filters = {
     year: yearSliderValue,
-    regions: metadata.regions,
+    regions: selectedRegions,
     minVisits: minVisitSliderValue
   }
+
 ```
 
 Chord diagram of countries per year.
@@ -201,7 +207,7 @@ Chord diagram of countries per year.
         ${yearSlider}
         ${minVisitSlider}
         <div class="grid-colspan-2">
-            ${chordLegend(metadata, filters)}
+            ${chordLegend(metadata, updateRegions)}
         </div>
     </div>
     ${chordDiagram(preAggregated, metadata, filters, width)}
