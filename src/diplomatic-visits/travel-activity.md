@@ -177,11 +177,11 @@ searchResultsInput.style.gap = "0.5rem";
     ).sort(),
   };
   
-  metadata.colors = d3.scaleOrdinal(metadata.regions, d3.schemeCategory10)
+  metadata.colors = d3.scaleOrdinal(metadata.regions, d3.schemeObservable10)
   
 const filters = {
   year: 2022,
-  // regions: ["Europe", "Asia", "Oceania", "Africa"],
+  regions: metadata.regions,
   minVisits: 5,
 }
 ```
@@ -189,6 +189,6 @@ const filters = {
 Chord diagram of countries per year.
 
 <div class="card">
-    ${chordLegend(metadata)}
+    ${chordLegend(metadata, filters)}
     ${chordDiagram(preAggregated, metadata, filters, width)}
 </div>

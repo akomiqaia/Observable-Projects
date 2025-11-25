@@ -1,7 +1,27 @@
 import * as d3 from "d3";
 import { html } from "htl";
+import type { VisitsData } from "../utils/types";
 
-export function chordDiagram(data, metadata, filters, width) {
+type Metadata = {
+  years: number[];
+  regions: string[];
+  leaderCountries: string[];
+  visitedCountries: string[];
+  colors: d3.ScaleOrdinal<string, string, never>;
+};
+
+type Filters = {
+  year: number;
+  regions: string[];
+  minVisits: number;
+};
+
+export function chordDiagram(
+  data: VisitsData,
+  metadata: Metadata,
+  filters: Filters,
+  width: number,
+) {
   // get unique values of countries
   const { matrix, countries, countryToRegion } = createChordMatrix(
     data,
@@ -79,7 +99,10 @@ export function chordDiagram(data, metadata, filters, width) {
   return svg.node();
 }
 
-function createChordMatrix(preAggregated, filters = {}) {
+function createChordMatrix(
+  preAggregated: d3.rollup<any, any, string, number>,
+  filters: Filters,
+) {
   const { year, regions, minVisits = 1 } = filters;
 
   const countryToRegion = new Map();
@@ -140,16 +163,18 @@ function createChordMatrix(preAggregated, filters = {}) {
   return { matrix, countries, countryToRegion };
 }
 
-export function legend(metadata) {
+export function legend(metadata: Metadata, filters: Filters) {
   return html`
-    <div style="display: flex; width: 100%; gap: 8px; flex-wrap: wrap; ">
-      ${metadata.regions.map(
+    <div
+      style="display: flex; width: 100%; gap: 8px; flex-wrap: wrap; font-size: 10px; "
+    >
+      ${filters.regions.map(
         (d) => html`
           <div style="display: flex; align-items: center;">
             <div
-              style="width: 20px; height: 20px; background-color: ${metadata.colors(
+              style="width: 15px; height: 15px; background-color: ${metadata.colors(
                 d,
-              )}; border-radius: 10%; margin-right: 10px;"
+              )}; border-radius: 10%; margin-right: 0.5rem;"
             ></div>
             <div>${d}</div>
           </div>
