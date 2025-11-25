@@ -6,6 +6,8 @@ import {horizontalBarChart} from "../components/horizontal-bar-chart.js"
 import {multiLinePlot} from "../components/multi-line-chart.js"
 import {stackedBarChart} from "../components/stacked-bar-chart.js"
 
+import {chordDiagram} from "../components/chord-diagram.js"
+
 ```
 
 # Diplomatic Travel Activity
@@ -146,9 +148,44 @@ searchResultsInput.style.gap = "0.5rem";
     ${multiLinePlot(searchResults, width)}
 </div>
 
+```js
+  const preAggregated = d3.rollup(
+    df,
+    (v) => v.length,
+    (d) => d.TripYear,
+    (d) => d.LeaderCountryOrIGO,
+    (d) => d.LeaderRegion,
+    (d) => d.CountryVisited,
+    (d) => d.RegionVisited,
+  );
 
-TODO:
+  const metadata = {
+    years: Array.from(new Set(df.map((d) => d.TripYear))).sort(
+      (a, b) => b - a,
+    ),
+    regions: Array.from(
+      new Set([
+        ...df.map((d) => d.LeaderRegion),
+        ...df.map((d) => d.RegionVisited),
+      ]),
+    ).sort(),
+    leaderCountries: Array.from(
+      new Set(df.map((d) => d.LeaderCountryOrIGO)),
+    ).sort(),
+    visitedCountries: Array.from(
+      new Set(df.map((d) => d.CountryVisited)),
+    ).sort(),
+  };
+  
+const filters = {
+  year: 2022,
+  // regions: ["Europe", "Asia", "Oceania", "Africa"],
+  minVisits: 5,
+}
+```
 
-Trip duration distribution (histogram) – TripDuration.
+Chord diagram of countries per year.
 
-Each country visitor exchange (using Chord diagram).
+<div class="card">
+    ${chordDiagram(preAggregated, metadata, filters, width)}
+</div>
