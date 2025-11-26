@@ -222,7 +222,12 @@ export function legend(metadata: Metadata, updateRegions) {
         return html`
           <div
             style="display: flex; align-items: center; cursor: pointer;"
-            onclick=${() => updateRegions(d)}
+            onclick=${(e) => {
+              const currentOpacity = e.currentTarget.style.opacity;
+              e.currentTarget.style.opacity =
+                currentOpacity === "0.5" ? "1" : "0.5";
+              updateRegions(d);
+            }}
           >
             <div
               style="width: 15px; height: 15px; background-color: ${metadata.colors(
