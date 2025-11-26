@@ -2,6 +2,12 @@ import * as d3 from "d3";
 import { html } from "htl";
 import type { VisitsData } from "../utils/types";
 
+type RegionVisitedMap = Map<string, number>; // RegionVisited -> count
+type CountryVisitedMap = Map<string, RegionVisitedMap>; // CountryVisited -> RegionVisitedMap
+type LeaderRegionMap = Map<string, CountryVisitedMap>; // LeaderRegion -> CountryVisitedMap
+type LeaderCountryMap = Map<string, LeaderRegionMap>; // LeaderCountry -> LeaderRegionMap
+type PreAggregated = Map<number, LeaderCountryMap>; // Year -> LeaderCountryMap
+
 type Metadata = {
   years: number[];
   regions: string[];
@@ -16,8 +22,18 @@ type Filters = {
   minVisits: number;
 };
 
+interface ChordGroupWithAngle extends d3.ChordGroup {
+  angle?: number;
+}
+
+interface ChordMatrixResult {
+  matrix: number[][];
+  countries: string[];
+  countryToRegion: Map<string, string>;
+}
+
 export function chordDiagram(
-  data: VisitsData,
+  data: PreAggregated,
   metadata: Metadata,
   filters: Filters,
   width: number,
@@ -38,16 +54,21 @@ export function chordDiagram(
     .attr("height", width)
     .attr("viewBox", [-width / 2, -width / 2, width, width]);
 
-  const chord = d3.chord().padAngle(0.02).sortSubgroups(d3.descending);
+  const chord = d3.chord().padAngle(0.04).sortSubgroups(d3.descending);
   const chords = chord(matrix);
-  const arc = d3.arc().innerRadius(innerRadius).outerRadius(outerRadius);
-  const ribbon = d3.ribbon().radius(innerRadius);
+  const arc = d3
+    .arc<d3.ChordGroup>()
+    .innerRadius(innerRadius)
+    .outerRadius(outerRadius);
+  const ribbon = d3.ribbon<d3.Chord, d3.ChordSubgroup>().radius(innerRadius);
 
   const group = svg.append("g").selectAll().data(chords.groups).join("g");
 
   group
     .append("path")
-    .attr("fill", (d) => colors(countryToRegion.get(countries[d.index])))
+    .attr("fill", (d) => {
+      return colors(countryToRegion.get(countries[d.index]) as string);
+    })
     .attr("d", arc);
   // .on("mouseover", (event, d) => {
   // console.log(`Mouseover event on ${countries[d.index]}`);
@@ -65,7 +86,9 @@ export function chordDiagram(
 
   group
     .append("text")
-    .each((d) => (d.angle = (d.startAngle + d.endAngle) / 2))
+    .each(
+      (d: ChordGroupWithAngle) => (d.angle = (d.startAngle + d.endAngle) / 2),
+    )
     .attr("dy", "0.35em")
     .attr(
       "transform",
@@ -88,7 +111,9 @@ export function chordDiagram(
     .data(chords)
     .join("path")
     .attr("d", ribbon)
-    .attr("fill", (d) => colors(countryToRegion.get(countries[d.target.index])))
+    .attr("fill", (d) => {
+      return colors(countryToRegion.get(countries[d.source.index]) as string);
+    })
     .attr("stroke", "white")
     .append("title")
     .text(
@@ -100,20 +125,24 @@ export function chordDiagram(
 }
 
 function createChordMatrix(
-  preAggregated: d3.rollup<any, any, string, number>,
+  preAggregated: PreAggregated,
   filters: Filters,
-) {
+): ChordMatrixResult {
   const { year, regions, minVisits = 1 } = filters;
 
-  const countryToRegion = new Map();
-  const edgeMap = new Map(); // Use Map for O(1) lookups
+  const countryToRegion = new Map<string, string>();
+  const edgeMap = new Map<string, number>();
+
+  const regionSet = regions && regions.length > 0 ? new Set(regions) : null;
 
   // Iterate through pre-aggregated structure
   preAggregated.forEach((yearMap, y) => {
+    // Skip if year filter doesn't match
     if (year && y !== year) return;
 
     yearMap.forEach((leaderRegionMap, leaderCountry) => {
       leaderRegionMap.forEach((visitedMap, leaderRegion) => {
+        // Skip if region filter doesn't match
         if (regions && regions.length > 0 && !regions.includes(leaderRegion)) {
           return;
         }
@@ -122,13 +151,7 @@ function createChordMatrix(
 
         visitedMap.forEach((regionVisitedMap, visitedCountry) => {
           regionVisitedMap.forEach((count, visitedRegion) => {
-            if (
-              regions &&
-              regions.length > 0 &&
-              !regions.includes(visitedRegion)
-            ) {
-              return;
-            }
+            if (regionSet && !regionSet.has(visitedRegion)) return;
 
             countryToRegion.set(visitedCountry, visitedRegion);
 
@@ -142,22 +165,42 @@ function createChordMatrix(
     });
   });
 
-  // Convert to matrix
-  const countries = Array.from(
-    new Set([
-      ...Array.from(edgeMap.keys()).map((k) => k.split("->")[0]),
-      ...Array.from(edgeMap.keys()).map((k) => k.split("->")[1]),
-    ]),
-  ).sort();
+  return buildMatrix(edgeMap, countryToRegion);
+}
 
-  const countryToIndex = new Map(countries.map((c, i) => [c, i]));
-  const matrix = Array(countries.length)
-    .fill(0)
-    .map(() => Array(countries.length).fill(0));
+// Separate matrix building logic
+function buildMatrix(
+  edgeMap: Map<string, number>,
+  countryToRegion: Map<string, string>,
+): ChordMatrixResult {
+  // Extract unique countries more efficiently
+  const countriesSet = new Set<string>();
+  edgeMap.forEach((_, key) => {
+    const [leader, visited] = key.split("->");
+    countriesSet.add(leader);
+    countriesSet.add(visited);
+  });
 
+  const countries = Array.from(countriesSet).sort();
+  const countryToIndex = new Map<string, number>(
+    countries.map((c, i) => [c, i]),
+  );
+
+  // Initialize matrix
+  const size = countries.length;
+  const matrix: number[][] = Array.from({ length: size }, () =>
+    Array(size).fill(0),
+  );
+
+  // Populate matrix
   edgeMap.forEach((count, key) => {
     const [leader, visited] = key.split("->");
-    matrix[countryToIndex.get(leader)][countryToIndex.get(visited)] = count;
+    const leaderIndex = countryToIndex.get(leader);
+    const visitedIndex = countryToIndex.get(visited);
+
+    if (leaderIndex !== undefined && visitedIndex !== undefined) {
+      matrix[leaderIndex][visitedIndex] = count;
+    }
   });
 
   return { matrix, countries, countryToRegion };
@@ -186,4 +229,41 @@ export function legend(metadata: Metadata, updateRegions) {
       })}
     </div>
   `;
+}
+
+export function aggrigateAndGenereateMeatadata(df: VisitsData): {
+  metadata: Metadata;
+  preAggregated: PreAggregated;
+} {
+  const preAggregated = d3.rollup(
+    df,
+    (v) => v.length,
+    (d) => d.TripYear,
+    (d) => d.LeaderCountryOrIGO,
+    (d) => d.LeaderRegion,
+    (d) => d.CountryVisited,
+    (d) => d.RegionVisited,
+  );
+  const regions = Array.from(
+    new Set([
+      ...df.map((d) => d.LeaderRegion),
+      ...df.map((d) => d.RegionVisited),
+    ]),
+  ).sort();
+  const metadata = {
+    years: Array.from(new Set(df.map((d) => d.TripYear))).sort((a, b) => b - a),
+    regions: regions,
+    leaderCountries: Array.from(
+      new Set(df.map((d) => d.LeaderCountryOrIGO)),
+    ).sort(),
+    visitedCountries: Array.from(
+      new Set(df.map((d) => d.CountryVisited)),
+    ).sort(),
+    colors: d3.scaleOrdinal(regions, d3.schemeObservable10),
+  };
+
+  return {
+    metadata,
+    preAggregated,
+  };
 }

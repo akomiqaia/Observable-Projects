@@ -6,7 +6,7 @@ import {horizontalBarChart} from "../components/horizontal-bar-chart.js"
 import {multiLinePlot} from "../components/multi-line-chart.js"
 import {stackedBarChart} from "../components/stacked-bar-chart.js"
 
-import {chordDiagram, legend as chordLegend} from "../components/chord-diagram.js"
+import {chordDiagram, legend as chordLegend, aggrigateAndGenereateMeatadata} from "../components/chord-diagram.js"
 
 ```
 
@@ -149,36 +149,7 @@ searchResultsInput.style.gap = "0.5rem";
 </div>
 
 ```js
-  const preAggregated = d3.rollup(
-    df,
-    (v) => v.length,
-    (d) => d.TripYear,
-    (d) => d.LeaderCountryOrIGO,
-    (d) => d.LeaderRegion,
-    (d) => d.CountryVisited,
-    (d) => d.RegionVisited,
-  );
-
-  const metadata = {
-    years: Array.from(new Set(df.map((d) => d.TripYear))).sort(
-      (a, b) => b - a,
-    ),
-    regions: Array.from(
-      new Set([
-        ...df.map((d) => d.LeaderRegion),
-        ...df.map((d) => d.RegionVisited),
-      ]),
-    ).sort(),
-    leaderCountries: Array.from(
-      new Set(df.map((d) => d.LeaderCountryOrIGO)),
-    ).sort(),
-    visitedCountries: Array.from(
-      new Set(df.map((d) => d.CountryVisited)),
-    ).sort(),
-  };
-  
-  metadata.colors = d3.scaleOrdinal(metadata.regions, d3.schemeObservable10)
-  
+  const {preAggregated, metadata} = aggrigateAndGenereateMeatadata(df)
   const yearSlider = Inputs.range([1990, 2024], {step: 1, value: 1990, label: 'Year'})
   const minVisitSlider = Inputs.range([1, 50], {step: 1, value: 5, label: 'Cumulative Visits between the 2 countries'})
   const yearSliderValue = Generators.input(yearSlider)
