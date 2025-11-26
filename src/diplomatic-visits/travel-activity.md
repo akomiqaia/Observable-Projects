@@ -177,7 +177,12 @@ searchResultsInput.style.gap = "0.5rem";
 
 ```
 
-Chord diagram of countries per year.
+To get more detailed information or to show diplomatic flow between the countries we can use the chord diagram. Bellow we have few filters that you can use to filter what you see. 
+- `Year` slider is to choose the year of the visits. 
+- `Visits between the 2 countries` slider is cumulative visits between the countries and number of visits. With this slider you can filter the minimum number of visits between two countries.
+- `Change Ribbon colors to region of visited region` toggle is to change the ribbon colors from leaders origin Region to visited region color. This could be useful if you want to see which region was visited by leaders in each year.
+- You can also deactivate/activate regions by clicking on the region name in the legend.
+- If you hover over the ribbon you can see the details of the visit and diplomatic exchange between the countries.
 
 <div class="card">
     <div>
