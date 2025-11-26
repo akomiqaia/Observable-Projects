@@ -150,10 +150,15 @@ searchResultsInput.style.gap = "0.5rem";
 
 ```js
   const {preAggregated, metadata} = aggrigateAndGenereateMeatadata(df)
-  const yearSlider = Inputs.range([1990, 2024], {step: 1, value: 1990, label: 'Year'})
-  const minVisitSlider = Inputs.range([1, 50], {step: 1, value: 5, label: 'Cumulative Visits between the 2 countries'})
+  
+  const yearSlider = Inputs.range([1990, 2024], {step: 1, value: 1990})
+  const minVisitSlider = Inputs.range([1, 50], {step: 1, value: 5})
+  const changeRibbons = Inputs.toggle({label: 'Change Ribbon colors to region of visited region', value: false})
+  
   const yearSliderValue = Generators.input(yearSlider)
   const minVisitSliderValue = Generators.input(minVisitSlider)
+  const changeRibbonsValue = Generators.input(changeRibbons)
+  
   const selectedRegions = Mutable(metadata.regions);
   const updateRegions = (d) => {
     return selectedRegions.value = selectedRegions.value.includes(d)
@@ -166,7 +171,8 @@ searchResultsInput.style.gap = "0.5rem";
   const filters = {
     year: yearSliderValue,
     regions: selectedRegions,
-    minVisits: minVisitSliderValue
+    minVisits: minVisitSliderValue,
+    changeRibbons: changeRibbonsValue
   }
 
 ```
@@ -174,10 +180,19 @@ searchResultsInput.style.gap = "0.5rem";
 Chord diagram of countries per year.
 
 <div class="card">
-    <div class="grid grid-cols-2">
-        ${yearSlider}
-        ${minVisitSlider}
-        <div class="grid-colspan-2">
+    <div>
+        <div class="grid grid-cols-3">
+            <div>
+                <p>Year</p>
+                ${yearSlider}
+            </div>
+            <div>
+                <p>Visits between the 2 countries</p>
+                ${minVisitSlider}
+            </div>
+            ${changeRibbons}
+        </div>
+        <div>
             ${chordLegend(metadata, updateRegions)}
         </div>
     </div>

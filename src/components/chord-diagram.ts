@@ -20,6 +20,7 @@ type Filters = {
   year: number;
   regions: string[];
   minVisits: number;
+  changeRibbons: boolean;
 };
 
 interface ChordGroupWithAngle extends d3.ChordGroup {
@@ -43,7 +44,9 @@ export function chordDiagram(
     data,
     filters,
   );
+
   const colors = metadata.colors;
+  const changeRibbons = filters.changeRibbons;
 
   const outerRadius = Math.min(width, width) * 0.4 - 40;
   const innerRadius = outerRadius - 20;
@@ -112,6 +115,9 @@ export function chordDiagram(
     .join("path")
     .attr("d", ribbon)
     .attr("fill", (d) => {
+      if (changeRibbons) {
+        return colors(countryToRegion.get(countries[d.target.index]) as string);
+      }
       return colors(countryToRegion.get(countries[d.source.index]) as string);
     })
     .attr("stroke", "white")
