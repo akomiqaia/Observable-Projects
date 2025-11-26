@@ -3,3 +3,7 @@
 @import url("observablehq:theme-ink.css") (prefers-color-scheme: dark);
 
 @import url("./styles/drawer.css");
+
+a {
+    text-decoration: underline;
+}
