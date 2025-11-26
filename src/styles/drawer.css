@@ -1,0 +1,277 @@
+/* --- Layout --- */
+.drawer-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(2px);
+    z-index: 40;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+}
+.drawer-backdrop.open {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.drawer-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100vh;
+    height: 100dvh;
+    width: 700px;
+    max-width: 95vw;
+    background: var(--theme-background);
+    color: var(--theme-foreground);
+    box-shadow: -10px 0 25px rgba(0, 0, 0, 0.15);
+    transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+}
+.drawer-panel.open {
+    transform: translateX(0);
+}
+
+/* --- Header --- */
+.drawer-top-section {
+    padding: 1.5rem 1.5rem 1rem 1.5rem;
+    border-bottom: 1px solid var(--theme-border);
+    background: var(--theme-background);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* Header Chart */
+.activity-chart-container {
+    height: 50px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+}
+.chart-bar {
+    background: var(--theme-foreground-focus);
+    opacity: 0.3;
+    border-radius: 2px 2px 0 0;
+    transition: all 0.2s;
+    position: relative;
+    cursor: pointer;
+}
+.chart-bar:hover {
+    opacity: 1;
+    transform: scaleY(1.1);
+    background: #3b82f6;
+}
+.chart-bar:hover::after {
+    content: attr(data-year) ": " attr(data-count);
+    position: absolute;
+    bottom: 100%;
+    right: 0;
+    background: var(--theme-foreground);
+    color: var(--theme-background);
+    padding: 2px 6px;
+    font-size: 10px;
+    white-space: nowrap;
+    border-radius: 4px;
+    pointer-events: none;
+}
+
+/* Legend */
+.legend-row {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.75rem;
+    color: var(--theme-foreground-muted);
+    align-items: center;
+    padding-top: 4px;
+    border-top: 1px dashed var(--theme-border);
+}
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+}
+
+/* --- Body Grid --- */
+.drawer-body-grid {
+    display: grid;
+    grid-template-columns: 100px 1fr; /* 100px Sidebar | Content */
+    height: calc(100dvh - 200px);
+    flex: 1;
+    overflow: hidden;
+}
+
+/* --- Sidebar (Sticky Logic) --- */
+.timeline-sidebar {
+    background: var(--theme-background-alt);
+    border-right: 1px solid var(--theme-border);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    scrollbar-width: none;
+}
+.timeline-sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.sidebar-group {
+    display: grid;
+    grid-template-columns: 24px 1fr; /* Name Column | Bars Column */
+    gap: 8px;
+    padding: 8px 4px 16px 4px; /* Bottom padding separates groups */
+    border-bottom: 1px solid var(--theme-border);
+}
+
+/* The Sticky Leader Name */
+.sidebar-label {
+    position: sticky; /* Sticky Magic */
+    top: 8px; /* Stick to top of view */
+    height: fit-content;
+    max-height: 100%;
+
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--theme-foreground);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: center;
+
+    cursor: pointer;
+    padding: 4px 0;
+    border-left: 3px solid var(--theme-border); /* Active indicator strip */
+    transition: all 0.2s;
+}
+.sidebar-label:hover {
+    border-left-color: #3b82f6;
+    color: #3b82f6;
+}
+
+.sidebar-bars-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Bars grow from left to right */
+    gap: 4px;
+    padding-top: 2px;
+}
+
+.nav-bar {
+    height: 6px;
+    background: var(--theme-foreground-muted);
+    border-radius: 2px;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: all 0.2s;
+}
+.nav-bar:hover {
+    opacity: 1;
+    transform: scaleX(1.1);
+}
+.nav-bar.agreement {
+    background: #22c55e;
+    opacity: 0.8;
+}
+.nav-bar.multilat {
+    background: #3b82f6;
+    opacity: 0.8;
+}
+
+/* --- Content Area --- */
+.content-area {
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-behavior: smooth;
+}
+
+.leader-block {
+    margin-bottom: 4rem;
+    scroll-margin-top: 10px;
+}
+.leader-title {
+    font-size: 1.2rem;
+    font-weight: 800;
+    /*margin-bottom: 1.5rem;*/
+    position: sticky;
+    top: 0;
+    background: var(--theme-background);
+    padding: 10px 0;
+    z-index: 5;
+    border-bottom: 2px solid var(--theme-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid tomato;
+}
+.leader-years-span {
+    font-size: 0.8rem;
+    font-weight: 400;
+    color: var(--theme-foreground-muted);
+}
+.year-anchor {
+    scroll-margin-top: 60px;
+}
+
+.visit-row {
+    display: grid;
+    grid-template-columns: 70px 1fr;
+    gap: 1rem;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    border-left: 3px solid transparent;
+    background: rgba(0, 0, 0, 0.01);
+}
+.visit-row:hover {
+    background: var(--theme-background-alt);
+}
+.visit-row.agreement {
+    border-left-color: #22c55e;
+}
+.visit-row.multilat {
+    border-left-color: #3b82f6;
+}
+
+.tag {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 5px;
+    text-transform: uppercase;
+}
+.tag.agreement {
+    background: rgba(34, 197, 94, 0.15);
+    color: #16a34a;
+}
+.tag.multilat {
+    background: rgba(59, 130, 246, 0.15);
+    color: #2563eb;
+}
+
+.chart-bar.active {
+    opacity: 1 !important;
+    background: #3b82f6 !important;
+    transform: scaleY(1.2);
+    box-shadow: 0 0 4px rgba(59, 130, 246, 0.5);
+}
+
+/* Active State for Sidebar Bars */
+.nav-bar.active {
+    opacity: 1 !important;
+    transform: scale(1.4);
+}
