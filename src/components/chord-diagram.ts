@@ -21,6 +21,7 @@ type Filters = {
   regions: string[];
   minVisits: number;
   changeRibbons: boolean;
+  updateCountry: (d: string) => void;
 };
 
 interface ChordGroupWithAngle extends d3.ChordGroup {
@@ -47,6 +48,7 @@ export function chordDiagram(
 
   const colors = metadata.colors;
   const changeRibbons = filters.changeRibbons;
+  const updateCountry = filters.updateCountry;
 
   const outerRadius = Math.min(width, width) * 0.4 - 40;
   const innerRadius = outerRadius - 20;
@@ -72,20 +74,14 @@ export function chordDiagram(
     .attr("fill", (d) => {
       return colors(countryToRegion.get(countries[d.index]) as string);
     })
-    .attr("d", arc);
-  // .on("mouseover", (event, d) => {
-  // console.log(`Mouseover event on ${countries[d.index]}`);
-  // ribbons.transition().style("opacity", 0.1);
-  // ribbons
-  //   .filter((r) => r.source.index === d.index || r.target.index === d.index)
-  //   .transition()
-  //   .style("opacity", 1);
-  // })
-  // .on("mouseout", (event, d) => {
-  //   console.log(`Mouseout event on ${countries[d.index]}`);
-  // });
-  // .append("title")
-  // .text((d) => `${d.value.toLocaleString("en-US")} ${countries[d.index]}`)
+    .attr("d", arc)
+    .style("cursor", "pointer")
+    .on("click", (event, d) => {
+      event.stopPropagation();
+      updateCountry(countries[d.index]);
+    })
+    .append("title")
+    .text((d) => `${d.value.toLocaleString("en-UK")} ${countries[d.index]}`);
 
   group
     .append("text")
@@ -103,6 +99,11 @@ export function chordDiagram(
     )
     .attr("text-anchor", (d) => ((d as any).angle > Math.PI ? "end" : "start"))
     .text((d) => countries[d.index])
+    .on("click", (event, d) => {
+      event.stopPropagation();
+      updateCountry(countries[d.index]);
+    })
+    .style("cursor", "pointer")
     .style("font-size", "10px")
     .style("fill", "#333")
     .style("width", "20px");
@@ -124,7 +125,7 @@ export function chordDiagram(
     .append("title")
     .text(
       (d) =>
-        `${d.source.value.toLocaleString("en-US")} ${countries[d.source.index]} → ${countries[d.target.index]}${d.source.index !== d.target.index ? `\n${d.target.value.toLocaleString("en-US")} ${countries[d.target.index]} → ${countries[d.source.index]}` : ``}`,
+        `${d.source.value.toLocaleString("en-UK")} ${countries[d.source.index]} → ${countries[d.target.index]}${d.source.index !== d.target.index ? `\n${d.target.value.toLocaleString("en-US")} ${countries[d.target.index]} → ${countries[d.source.index]}` : ``}`,
     );
 
   return svg.node();

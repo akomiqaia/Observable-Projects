@@ -1,3 +1,6 @@
+---
+toc: false
+---
 ```ts
 import * as Inputs from "npm:@observablehq/inputs";
 import * as Plot from "@observablehq/plot";
@@ -8,6 +11,8 @@ import {stackedBarChart} from "../components/stacked-bar-chart.js"
 
 import {chordDiagram, legend as chordLegend, aggrigateAndGenereateMeatadata} from "../components/chord-diagram.js"
 
+import {drawer} from "../components/drawer.js"
+
 ```
 
 # Diplomatic Travel Activity
@@ -17,7 +22,7 @@ From initial observation we can start by analyzing the data and identifying patt
 > | Goal: Understand where, when, and how much travel occurred.
 
 ```js
-const parquetData = FileAttachment("../data/visits.json").json();
+const parquetData = FileAttachment("../data/visits.json").json()
 ```
 
 ```js
@@ -25,9 +30,7 @@ const df = parquetData.map(d => ({
   ...d,
   LeaderID: parseInt(d.LeaderID),
   Exiled: parseInt(d.Exiled),
-  TripYear: parseInt(d.TripYear),
-  TripStartDate: new Date(d).toLocaleDateString(),
-  TripEndDate: new Date(d).toLocaleDateString()
+  TripYear: parseInt(d.TripYear)
 }))
 ```
 
@@ -166,13 +169,21 @@ searchResultsInput.style.gap = "0.5rem";
       : [...selectedRegions.value, d];
   }
   
+  const selectedCountry = Mutable(null)
+  
+  const updateCountry = (d) => {
+    return selectedCountry.value = d;
+  }
+
 ```
+
 ```js
   const filters = {
     year: yearSliderValue,
     regions: selectedRegions,
     minVisits: minVisitSliderValue,
-    changeRibbons: changeRibbonsValue
+    changeRibbons: changeRibbonsValue,
+    updateCountry: updateCountry,
   }
 
 ```
@@ -183,6 +194,8 @@ To get more detailed information or to show diplomatic flow between the countrie
 - `Change Ribbon colors to region of visited region` toggle is to change the ribbon colors from leaders origin Region to visited region color. This could be useful if you want to see which region was visited by leaders in each year.
 - You can also deactivate/activate regions by clicking on the region name in the legend.
 - If you hover over the ribbon you can see the details of the visit and diplomatic exchange between the countries.
+- You can also click on a country `title` or the `arc` that represents the country to get more details about the country itself.
+
 
 <div class="card">
     <div>
@@ -203,3 +216,5 @@ To get more detailed information or to show diplomatic flow between the countrie
     </div>
     ${chordDiagram(preAggregated, metadata, filters, width)}
 </div>
+
+${drawer(df, selectedCountry, updateCountry)}

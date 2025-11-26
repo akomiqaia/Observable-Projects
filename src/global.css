@@ -1,3 +1,5 @@
 @import url("observablehq:default.css");
 @import url("observablehq:theme-parchment.css");
 @import url("observablehq:theme-ink.css") (prefers-color-scheme: dark);
+
+@import url("./styles/drawer.css");
