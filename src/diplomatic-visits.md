@@ -5,13 +5,13 @@ toc: false
 import * as Inputs from "npm:@observablehq/inputs";
 import * as Plot from "@observablehq/plot";
 import * as d3 from "npm:d3";
-import {horizontalBarChart} from "../components/horizontal-bar-chart.js"
-import {multiLinePlot} from "../components/multi-line-chart.js"
-import {stackedBarChart} from "../components/stacked-bar-chart.js"
+import {horizontalBarChart} from "./components/horizontal-bar-chart.js"
+import {multiLinePlot} from "./components/multi-line-chart.js"
+import {stackedBarChart} from "./components/stacked-bar-chart.js"
 
-import {chordDiagram, legend as chordLegend, aggrigateAndGenereateMeatadata} from "../components/chord-diagram.js"
+import {chordDiagram, legend as chordLegend, aggrigateAndGenereateMeatadata} from "./components/chord-diagram.js"
 
-import {drawer} from "../components/drawer.js"
+import {drawer} from "./components/drawer.js"
 
 ```
 
@@ -21,7 +21,7 @@ From initial observation we can start by analyzing the data and identifying patt
 
 
 ```js
-const parquetData = FileAttachment("../data/visits.json").json()
+const parquetData = FileAttachment("./data/diplomatic-visits/visits.json").json()
 ```
 
 ```js
@@ -222,6 +222,18 @@ To get more detailed information or to show diplomatic flow between the countrie
 
 ${drawer(df, selectedCountry, updateCountry)}
 
+<!--# Geographic Analysis
+
+> | Goal: Map or visualize international relationships.
+
+World map of visited countries – CountryVisited.
+
+Chord diagram of leader country → country visited – LeaderCountryISO → CountryVisitedISO.
+
+Network graph of diplomatic meetings – linking:
+- LeaderFullName
+- HostHOGSName
+- MetNonhostHOGS, etc.-->
 
 
 <style>

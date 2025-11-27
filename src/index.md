@@ -3,14 +3,12 @@ toc: false
 ---
 
 ```js
-// import {chordDiagram, legend as chordLegend, aggrigateAndGenereateMeatadata} from "./components/chord-diagram.js"
-// import {drawer} from "./components/drawer.js"}
 import {drawer} from "./components/drawer.js"
 import {chordDiagram, aggrigateAndGenereateMeatadata, legend as chordLegend} from "./components/chord-diagram.js"
 ```
 
 ```js
-const parquetData = FileAttachment("./data/visits.json").json()
+const parquetData = FileAttachment("./data/diplomatic-visits/visits.json").json()
 
 
 ```
@@ -48,7 +46,7 @@ const filters = {
 
 <div  style="max-width: 800px; margin: 0 auto;">
     <p>
-        <a href="./diplomatic-visits/travel-activity">Chord chart</a> To show diplomatic visits between countries and organizations.
+        <a href="./diplomatic-visits">Chord chart</a> To show diplomatic visits between countries and organizations.
     </p>
     <div class="card">
         <div>

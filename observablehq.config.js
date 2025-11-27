@@ -10,14 +10,14 @@ export default {
     {
       name: "Diplomatic Visits (1990-2024)",
       open: false,
-      path: "/diplomatic-visits/",
-      pages: [
-        { name: "Travel Activity", path: "/diplomatic-visits/travel-activity" },
-        {
-          name: "Geographic Analysis",
-          path: "/diplomatic-visits/geographic-analysis",
-        },
-      ],
+      path: "/diplomatic-visits",
+      // pages: [
+      //   { name: "Travel Activity", path: "/diplomatic-visits/travel-activity" },
+      //   {
+      //     name: "Geographic Analysis",
+      //     path: "/diplomatic-visits/geographic-analysis",
+      //   },
+      // ],
     },
   ],
 

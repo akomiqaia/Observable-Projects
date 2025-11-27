@@ -9,7 +9,7 @@ const reader = await connection.runAndReadAll(sql`
       strftime(TripStartDate, '%Y-%m-%d') AS TripStartDate,
       strftime(TripEndDate, '%Y-%m-%d') AS TripEndDate
     )
-  FROM 'src/data/visits.parquet'
+  FROM 'src/data/diplomatic-visits/visits.parquet'
   ORDER BY TripYear;
 `);
 
