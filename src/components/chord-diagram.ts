@@ -105,7 +105,7 @@ export function chordDiagram(
     })
     .style("cursor", "pointer")
     .style("font-size", "10px")
-    .style("fill", "#333")
+    .style("fill", "var(--theme-foreground)")
     .style("width", "20px");
 
   svg
