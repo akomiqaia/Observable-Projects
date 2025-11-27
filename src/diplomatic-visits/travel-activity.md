@@ -19,7 +19,6 @@ import {drawer} from "../components/drawer.js"
 
 From initial observation we can start by analyzing the data and identifying patterns or trends.
 
-> | Goal: Understand where, when, and how much travel occurred.
 
 ```js
 const parquetData = FileAttachment("../data/visits.json").json()
@@ -61,17 +60,16 @@ Let's take a look at the year 2020 and see which country officials made the most
 const visitorsByYear = d3.group(df, d => d.TripYear)
 ```
 
-<div class="tip">You can see the other years by changing the year selection.</div>
 
 ```js
-const year = view(
-  Inputs.select(visitorsByYear, { 
+const yearInput = Inputs.select(visitorsByYear, { 
     label: "Year", 
     format: d => d[0].toString(),
     valueof: ([year]) => year,
     value: 2020
   })
-)
+
+const year = Generators.input(yearInput);
 ```
 
 ```js
@@ -93,15 +91,18 @@ const topVisitorsPlot = horizontalBarChart(topVisitors, "tomato",html`Top Countr
 const topVisitedPlot = horizontalBarChart(topVisited, "steelblue", html`Top Countries that<br /><b>received</b> Diplomatic Visitors`);
 
 ```
-
-<div class="grid grid-cols-2">
-    <div class="card">${topVisitorsPlot}</div>
-    <div class="card">${topVisitedPlot}</div>
+<div class="card">
+    ${yearInput}
+    <div class="grid grid-cols-2">
+        <div class="card">${topVisitorsPlot}</div>
+        <div class="card">${topVisitedPlot}</div>
+    </div>
 </div>
 
 looking beyond 2020 and investigating other years it seems that **Palestine** has sent most diplomatic visitors in 11 out of 35 years in each year.
 
 in terms of who received the most diplomatic visitors it seems that the **United States** has received the most diplomatic visitors in 25 out of 35 years.
+
 
 ```js
 const toggleInput = Inputs.toggle({
@@ -214,7 +215,17 @@ To get more detailed information or to show diplomatic flow between the countrie
             ${chordLegend(metadata, updateRegions)}
         </div>
     </div>
-    ${chordDiagram(preAggregated, metadata, filters, width)}
+    <div style="margin: 0 auto; max-width: 800px;">
+        ${chordDiagram(preAggregated, metadata, filters, width)}
+    </div>
 </div>
 
 ${drawer(df, selectedCountry, updateCountry)}
+
+
+
+<style>
+ p, ul, h1 {
+    margin: 30px auto;
+}
+</style>

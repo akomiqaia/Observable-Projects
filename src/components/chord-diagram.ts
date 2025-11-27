@@ -38,13 +38,14 @@ export function chordDiagram(
   data: PreAggregated,
   metadata: Metadata,
   filters: Filters,
-  width: number,
+  windowWidth: number,
 ) {
   // get unique values of countries
   const { matrix, countries, countryToRegion } = createChordMatrix(
     data,
     filters,
   );
+  const width = Math.min(windowWidth, 800);
 
   const colors = metadata.colors;
   const changeRibbons = filters.changeRibbons;
@@ -104,7 +105,7 @@ export function chordDiagram(
       updateCountry(countries[d.index]);
     })
     .style("cursor", "pointer")
-    .style("font-size", "10px")
+    .style("font-size", "12px")
     .style("fill", "var(--theme-foreground)")
     .style("width", "20px");
 

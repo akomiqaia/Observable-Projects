@@ -37,7 +37,7 @@ const df = parquetData.map(d => ({
 const filters = {
   year: 2000,
   regions: selectedRegions,
-  minVisits: 5,
+  minVisits: 6,
 }
 ```
 
@@ -46,19 +46,16 @@ const filters = {
   <h2>Welcome to a page where you can see personal data visualization exploration, ideas and work.</h2>
 </div>
 
-<div>
-    <h2>Notable Mentions:</h2>
-</div>
-
-[Chord chart](./diplomatic-visits/travel-activity) To show diplomatic visits between countries and organizations.
-
-<div>
+<div  style="max-width: 800px; margin: 0 auto;">
+    <p>
+        <a href="./diplomatic-visits/travel-activity">Chord chart</a> To show diplomatic visits between countries and organizations.
+    </p>
     <div class="card">
         <div>
             ${chordLegend(metadata, updateRegions)}
         </div>
         ${chordDiagram(preAggregated, metadata, filters, width)}
-        <p>* The chart shows the number of visits between countries and organizations in 2000. where at least 5 diplomatic visits happened between the countries.</p>
+        <p>* The chart shows the number of visits between countries and organizations in 2000. where at least 6 diplomatic visits happened between the countries.</p>
     </div>
 </div>
 
@@ -74,6 +71,7 @@ const filters = {
   margin: 4rem 0 8rem;
   text-wrap: balance;
   text-align: center;
+  margin: 0 auto;
 }
 
 .hero h1 {
