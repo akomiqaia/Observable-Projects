@@ -147,6 +147,9 @@ function createChordMatrix(
     // Skip if year filter doesn't match
     if (year && y !== year) return;
 
+    // Accumulate counts for this year
+    const yearEdgeMap = new Map<string, number>();
+
     yearMap.forEach((leaderRegionMap, leaderCountry) => {
       leaderRegionMap.forEach((visitedMap, leaderRegion) => {
         // Skip if region filter doesn't match
@@ -162,13 +165,37 @@ function createChordMatrix(
 
             countryToRegion.set(visitedCountry, visitedRegion);
 
-            if (count >= minVisits) {
-              const key = `${leaderCountry}->${visitedCountry}`;
-              edgeMap.set(key, (edgeMap.get(key) || 0) + count);
-            }
+            const key = `${leaderCountry}->${visitedCountry}`;
+            yearEdgeMap.set(key, (yearEdgeMap.get(key) || 0) + count);
           });
         });
       });
+    });
+
+    // Calculate bidirectional totals for filtering
+    const pairTotals = new Map<string, number>();
+    yearEdgeMap.forEach((count, key) => {
+      const [country1, country2] = key.split("->");
+      // Create a canonical key (alphabetically sorted)
+      const pairKey = [country1, country2].sort().join("<->");
+      pairTotals.set(pairKey, (pairTotals.get(pairKey) || 0) + count);
+    });
+
+    // Only include edges where bidirectional total meets minVisits
+    yearEdgeMap.forEach((count, key) => {
+      const [country1, country2] = key.split("->");
+      const pairKey = [country1, country2].sort().join("<->");
+      const totalBidirectional = pairTotals.get(pairKey) || 0;
+
+      if (totalBidirectional >= minVisits) {
+        // When year filter is active, just use the year's count
+        // When no year filter, accumulate across years
+        if (year) {
+          edgeMap.set(key, count);
+        } else {
+          edgeMap.set(key, (edgeMap.get(key) || 0) + count);
+        }
+      }
     });
   });
 
