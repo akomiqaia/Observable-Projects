@@ -4,16 +4,20 @@
 
 @import url("./styles/drawer.css");
 
-a {
-    text-decoration: underline;
-}
-
 body {
     max-width: 1200px;
 }
 
-@media (min-width: 768px) {
-    .card {
-        margin: 0px 50px;
+#observablehq-footer {
+    margin: 100px 0;
+    & > nav {
+        margin: 0 auto;
+        width: 100%;
+        max-width: unset;
+        gap: 8em;
     }
+}
+
+a {
+    text-decoration: underline;
 }
