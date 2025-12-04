@@ -22,6 +22,8 @@ From initial observation we can start by analyzing the data and identifying patt
 
 ```js
 const parquetData = FileAttachment("./data/diplomatic-visits/visits.json").json()
+
+const stackedBarData = FileAttachment("./data/diplomatic-visits/stacked-bar.json").json() 
 ```
 
 ```js
@@ -49,7 +51,7 @@ toggleInputRegion.style.right = "0"
 
 <div class="card" style="position: relative;">
     ${toggleInputRegion}
-    ${stackedBarChart(df, width, toggleRegion)}
+    ${stackedBarChart(stackedBarData, width, toggleRegion)}
 </div>
 
 The official visits have dropped significantly in 2020, even lower than the number of flights in 1990, which must have been due to the COVID-19 pandemic.

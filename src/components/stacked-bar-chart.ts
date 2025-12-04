@@ -1,12 +1,22 @@
 import * as Plot from "@observablehq/plot";
+import * as d3 from "d3";
 
-export function stackedBarChart(data: any[], width: number, regionToggle: boolean): any {
+export function stackedBarChart(
+  data: {
+    TripYear: number;
+    RegionVisited: string;
+    LeaderRegion: string;
+    Count: number;
+  }[],
+  width: number,
+  regionToggle: boolean
+): any {
   return Plot.plot({
     color: {
       legend: true,
     },
     title: "Number of diplomatic visits in last 35 years",
-    subtitle: regionToggle ? "By Region visited" :"By Leaders origin",
+    subtitle: regionToggle ? "By Region visited" : "By Leaders origin",
     width,
     grid: true,
     marginBottom: 50,
@@ -23,18 +33,18 @@ export function stackedBarChart(data: any[], width: number, regionToggle: boolea
         data,
         Plot.groupX(
           {
-            y: "count",
+            y: (D) => d3.sum(D, (d) => d.Count),
           },
           {
-            fill: regionToggle ? "RegionVisited" :"LeaderRegion",
+            fill: regionToggle ? "RegionVisited" : "LeaderRegion",
             x: "TripYear",
             tip: {
               format: {
                 x: (d) => d.toString(),
               },
             },
-          },
-        ),
+          }
+        )
       ),
     ],
   });
