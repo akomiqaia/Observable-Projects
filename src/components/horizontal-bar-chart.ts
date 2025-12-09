@@ -1,7 +1,24 @@
 import * as Plot from "@observablehq/plot";
 
+type SharedTypes = {
+  TripYear: string
+  count: number
+}
+
+type SentDataType = SharedTypes & {
+  LeaderCountryOrIGO?: string
+
+}
+
+type ReceivedDataType = SharedTypes & {
+  CountryVisited?: string 
+}
+
+type ChartData = SentDataType | ReceivedDataType
+
 export function horizontalBarChart(
-  data: [string, number][],
+  data: ChartData[],
+  field: "LeaderCountryOrIGO" | "CountryVisited",
   fill?: string,
   title?: string
 ) {
@@ -11,8 +28,8 @@ export function horizontalBarChart(
     marginRight: 150,
     marks: [
       Plot.barX(data, {
-        x: (d) => d[1],
-        y: (d) => d[0],
+        x: 'count',
+        y: field,
         fill: fill ?? "tomato",
         sort: {
           reverse: true,
@@ -20,9 +37,9 @@ export function horizontalBarChart(
         },
       }),
       Plot.text(data, {
-        text: (d) => d[0],
-        x: (d) => d[1],
-        y: (d) => d[0],
+        text: field,
+        x: "count",
+        y: field,
         textAnchor: "start",
         lineWidth: 10,
         dx: 10,
@@ -31,9 +48,9 @@ export function horizontalBarChart(
         fill: "var(--theme-foreground)",
       }),
       Plot.text(data, {
-        text: (d) => `${d[1]}`,
-        x: (d) => d[1],
-        y: (d) => d[0],
+        text: "count",
+        x: "count",
+        y: field,
         dx: -20,
         fontSize: 16,
         fontWeight: "bold",

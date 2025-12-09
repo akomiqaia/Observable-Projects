@@ -24,6 +24,7 @@ From initial observation we can start by analyzing the data and identifying patt
 const parquetData = FileAttachment("./data/diplomatic-visits/visits.json").json()
 
 const stackedBarData = FileAttachment("./data/diplomatic-visits/stacked-bar.json").json() 
+const topVisits = FileAttachment("./data/diplomatic-visits/top-sent-received.json").json() 
 ```
 
 ```js
@@ -59,7 +60,7 @@ The official visits have dropped significantly in 2020, even lower than the numb
 Let's take a look at the year 2020 and see which country officials made the most diplomatic visits and which country hosted the most diplomatic visitors.
 
 ```js
-const visitorsByYear = d3.group(df, d => d.TripYear)
+const visitorsByYear = d3.group(topVisits.sentJsonData, d => d.TripYear)
 ```
 
 
@@ -68,29 +69,32 @@ const yearInput = Inputs.select(visitorsByYear, {
     label: "Year", 
     format: d => d[0].toString(),
     valueof: ([year]) => year,
-    value: 2020
+    value: "2020"
   })
 
 const year = Generators.input(yearInput);
 ```
 
 ```js
-const visitors = d3.rollup(visitorsByYear.get(year), v => v.length, d => d.LeaderCountryOrIGO)
-const visited = d3.rollup(visitorsByYear.get(year), v => v.length, d => d.CountryVisited)
+const topVisitors = topVisits.sentJsonData
+  .filter(d => d.TripYear == year)
+  .sort((a, b) => b.count - a.count)
+  .map(d => {
+    return {...d, count: +d.count}
+  })
+
+const topVisited = topVisits.receivedJsonData
+  .filter(d => d.TripYear == year)
+  .sort((a, b) => b.count - a.count)
+  .map(d => {
+    return {...d, count: +d.count}
+  })
+
 ```
 
 ```js
-const topVisitors = Array.from(visitors.entries())
-  .sort((a, b) => b[1] - a[1]) 
-  .slice(0, 10);
-const topVisited = Array.from(visited.entries())
-  .sort((a, b) => b[1] - a[1])
-  .slice(0, 10);
-```
-
-```js
-const topVisitorsPlot = horizontalBarChart(topVisitors, "tomato",html`Top Countries that<br /><b>sent</b> Diplomatic Visitors`);
-const topVisitedPlot = horizontalBarChart(topVisited, "steelblue", html`Top Countries that<br /><b>received</b> Diplomatic Visitors`);
+const topVisitorsPlot = horizontalBarChart(topVisitors, "LeaderCountryOrIGO", "tomato",html`Top Countries that<br /><b>sent</b> Diplomatic Visitors`);
+const topVisitedPlot = horizontalBarChart(topVisited, "CountryVisited", "steelblue", html`Top Countries that<br /><b>received</b> Diplomatic Visitors`);
 
 ```
 <div class="card">
