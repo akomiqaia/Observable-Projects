@@ -24,6 +24,7 @@ export function stackedBarChart(
       tickRotate: -45,
       label: "Year",
       tickFormat: (d) => d.toString(),
+      type: "band"
     },
     y: {
       label: "Number of Visits",
@@ -33,6 +34,7 @@ export function stackedBarChart(
         data,
         Plot.groupX(
           {
+            // @ts-ignore
             y: (D) => d3.sum(D, (d) => d.Count),
           },
           {

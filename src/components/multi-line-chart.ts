@@ -1,28 +1,32 @@
+import type { ChartData } from "./horizontal-bar-chart";
+
 import * as Plot from "@observablehq/plot";
 import * as d3 from "d3";
 
-export const multiLinePlot = (data, width) => {
+export const multiLinePlot = (data: ChartData[], zDimension: string, width: number) => {
   return Plot.plot({
     y: {
       grid: true,
       label: "↑ Number of visits",
     },
     x: {
-      tickFormat: (d) => d.toString(),
+      tickFormat: (d) => d,
+      tickRotate: -45,
+      type: "band"
     },
     width,
-    marginBottom: 20,
+    marginBottom: 50,
     marks: [
       Plot.ruleY([0]),
       Plot.lineY(data, {
-        x: (d) => d[1],
-        y: (d) => d[2],
-        z: (d) => d[0],
-        stroke: (d) => d[0],
+        x: "TripYear",
+        y: d => +d.count,
+        z: zDimension,
+        stroke: zDimension,
         channels: {
-          Country: (d) => d[0],
-          Count: (d) => d[2],
-          Year: (d) => d[1].toString(),
+          Country: zDimension,
+          Count: "count",
+          Year: "TripYear",
         },
         tip: {
           format: {
@@ -40,6 +44,7 @@ export const multiLinePlot = (data, width) => {
               const z = values.z[index[0]];
               path
                 .style("stroke", "var(--theme-foreground-faintest)")
+                // @ts-ignore
                 .filter(([i]) => values.z && values.z[i] === z)
                 .style("stroke", null)
                 .raise();

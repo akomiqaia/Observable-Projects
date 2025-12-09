@@ -6,15 +6,15 @@ type SharedTypes = {
 }
 
 type SentDataType = SharedTypes & {
-  LeaderCountryOrIGO?: string
+  LeaderCountryOrIGO: string
 
 }
 
 type ReceivedDataType = SharedTypes & {
-  CountryVisited?: string 
+  CountryVisited: string 
 }
 
-type ChartData = SentDataType | ReceivedDataType
+export type ChartData = SentDataType | ReceivedDataType
 
 export function horizontalBarChart(
   data: ChartData[],

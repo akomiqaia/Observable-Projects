@@ -24,7 +24,7 @@ From initial observation we can start by analyzing the data and identifying patt
 const parquetData = FileAttachment("./data/diplomatic-visits/visits.json").json()
 
 const stackedBarData = FileAttachment("./data/diplomatic-visits/stacked-bar.json").json() 
-const topVisits = FileAttachment("./data/diplomatic-visits/top-sent-received.json").json() 
+const visits = FileAttachment("./data/diplomatic-visits/visits-per-year.json").json() 
 ```
 
 ```js
@@ -34,6 +34,7 @@ const df = parquetData.map(d => ({
   Exiled: parseInt(d.Exiled),
   TripYear: parseInt(d.TripYear)
 }))
+
 ```
 
 ```js
@@ -60,7 +61,7 @@ The official visits have dropped significantly in 2020, even lower than the numb
 Let's take a look at the year 2020 and see which country officials made the most diplomatic visits and which country hosted the most diplomatic visitors.
 
 ```js
-const visitorsByYear = d3.group(topVisits.sentJsonData, d => d.TripYear)
+const visitorsByYear = d3.group(visits.sentJsonData, d => d.TripYear)
 ```
 
 
@@ -76,16 +77,18 @@ const year = Generators.input(yearInput);
 ```
 
 ```js
-const topVisitors = topVisits.sentJsonData
+const topVisitors = visits.sentJsonData
   .filter(d => d.TripYear == year)
   .sort((a, b) => b.count - a.count)
+  .splice(0, 10)
   .map(d => {
     return {...d, count: +d.count}
   })
 
-const topVisited = topVisits.receivedJsonData
+const topVisited = visits.receivedJsonData
   .filter(d => d.TripYear == year)
   .sort((a, b) => b.count - a.count)
+  .splice(0,10)
   .map(d => {
     return {...d, count: +d.count}
   })
@@ -124,15 +127,10 @@ toggleInput.style.flexDirection = "row-reverse";
 
 ```js
 
-const multiLineChartData = d3.flatRollup(df,
-  v => v.length,
-  d => toggle ? d.CountryVisited : d.LeaderCountryOrIGO,
-  d => d.TripYear
-)
+const multiLineChartData = !toggle ? visits.sentJsonData : visits.receivedJsonData
+const zDimension = !toggle ? "LeaderCountryOrIGO" : "CountryVisited"
 
-
-const countries = [...new Set(multiLineChartData.map(d => d[0]))]
-
+const countries = [...new Set(visits.sentJsonData.map(d => d.LeaderCountryOrIGO))]
 
 const searchResultsInput = Inputs.search(multiLineChartData, {
   label: "Country",
@@ -155,7 +153,7 @@ searchResultsInput.style.gap = "0.5rem";
         ${searchResultsInput}
         ${toggleInput}
     </div>
-    ${multiLinePlot(searchResults, width)}
+    ${multiLinePlot(searchResults, zDimension, width)}
 </div>
 
 ```js
